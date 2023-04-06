@@ -1,5 +1,5 @@
 
-FROM mcr.microsoft.com/devcontainers/base:jammy AS base
+FROM --platform=arm64 mcr.microsoft.com/devcontainers/base:jammy AS base
 
 ARG TARGETARCH
 
@@ -25,21 +25,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
             vim pinentry-tty libsasl2-modules \
             libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev ninja-build libmount-dev\
             && \
-    eatmydata apt-get autoremove -y && \
-    eatmydata apt-get autoclean -y && \
     sed -Ei 's,^# (en_US\.UTF-8 .*)$,\1,' /etc/locale.gen && \
     dpkg-reconfigure locales && \
     dpkg-query --showformat '${Package}_${Version}_${Architecture}\n' --show > /packages.txt
 
 FROM golang:latest AS cpubuild
-#RUN if [ `uname -m` = "aarch64" ]; then \
-#	export TARGETGOARCH="arm64"; \
-#    else \
-#	export TARGETGOARCH="amd64"; \
-#    fi; \
-#    wget https://go.dev/dl/go1.19.linux-$TARGETGOARCH.tar.gz; \
-#    tar xf go*.tar.gz;rm go*.tar.gz;mv go /usr/local
-
 RUN git clone https://github.com/u-root/cpu.git
 WORKDIR /go/cpu
 RUN go mod tidy
@@ -62,8 +52,3 @@ FROM base
 COPY --from=lkvmbuild /usr/local/bin/lkvm /usr/local/bin/lkvm
 COPY --from=qemubuild /usr/local/bin/* /usr/local/bin
 COPY --from=cpubuild /go/bin/cpu /usr/local/bin/cpu
-
-#ENV GOROOT /usr/local/go
-#ENV PATH /usr/local/go/bin:/home/vscode/go/bin:${PATH}
-#ENV LANG "en_US.UTF-8"
-#ENV MAKE "/usr/bin/make"
