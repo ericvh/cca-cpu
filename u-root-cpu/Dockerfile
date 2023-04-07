@@ -1,4 +1,4 @@
-FROM golang:latest as builder
+FROM --platform=arm64 golang:latest as builder
 
 RUN mkdir -p /opt
 RUN mkdir -p /opt

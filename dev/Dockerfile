@@ -29,7 +29,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     dpkg-reconfigure locales && \
     dpkg-query --showformat '${Package}_${Version}_${Architecture}\n' --show > /packages.txt
 
-FROM golang:latest AS cpubuild
+FROM --platform=arm64 golang:latest AS cpubuild
 RUN git clone https://github.com/u-root/cpu.git
 WORKDIR /go/cpu
 RUN go mod tidy
