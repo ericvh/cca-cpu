@@ -16,5 +16,3 @@ RUN if [ `uname -m` = "aarch64" ] ; then wget https://developer.arm.com/-/media/
                                     else wget https://developer.arm.com/-/media/Files/downloads/ecosystem-models/FVP_Base_RevC-2xAEMvA_11.21_15_Linux64.tgz ; fi \
     && tar xf F*.tgz && rm *.tgz
 RUN ln -s Base_RevC_AEMvA_pkg/models/Linux64*/FVP_Base_RevC-2xAEMvA fvp
-ENTRYPOINT ["./fvp"]
-CMD ["--help"]

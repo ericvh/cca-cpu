@@ -1,5 +1,5 @@
 .PHONY: default
-default: /usr/local/bin/qemu-system-aarch64 /usr/local/bin/lkvm linux-cca u-root-initramfs
+default: /usr/local/bin/qemu-system-aarch64 /usr/local/bin/lkvm /workspaces/artifacts/Image.guest /workspaces/artifacts/Image /workspaces/artifacts/initramfs.cpio
 
 # Check if we are running inside a Docker container
 DOCKER_CONTAINER := $(shell if [ -f "/.dockerenv" ]; then echo "1"; fi)
@@ -42,12 +42,17 @@ kvmtool-cca/.git:
 /usr/local/bin/lkvm: kvmtool-cca/.git
 	cd kvmtool-cca && make -j`nproc` && sudo cp lkvm /usr/local/bin
 
-.PHONY: linux-cca
-linux-cca:
-	make -C linux-cca
+/workspaces/artifacts/Image.guest:
+	make -C linux-cca guest
+	sudo cp linux-cca/guest/.build/arch/arm64/boot/Image /workspaces/artifacts/Image.guest
 
-u-root-initramfs/initramfs.cpio:
+/workspaces/artifacts/Image:
+	make -C linux-cca guest
+	sudo cp linux-cca/host/.build/arch/arm64/boot/Image /workspaces/artifacts/Image
+
+/workspaces/artifacts/initramfs.cpio:
 	make -C u-root-initramfs
+	sudo cp u-root-initramfs/initramfs.cpio /workspaces/artifacts/initramfs.cpio
 
 clean:
 	make -C linux-cca clean

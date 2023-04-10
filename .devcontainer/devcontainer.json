@@ -1,9 +1,11 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-	"build": { "dockerfile": "Dockerfile" }
+	"dockerComposeFile": "compose.yml",
 	"remoteUser": "vscode",
 	"containerUser": "vscode",
+	"service": "dev",
+	"shutdownAction": "stopCompose",
 	"customizations": {
 		"vscode": {
 				"extensions": ["jvalecillos.gpg","ms-vscode.cpptools","dendron.dendron","GitHub.vscode-pull-request-github","eamodio.gitlens"]
