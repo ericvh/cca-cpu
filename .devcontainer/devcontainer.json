@@ -10,10 +10,8 @@
 		}
 	},
 	"mounts": [
-		"source=artifacts,target=/workspaces/artifacts,type=bind,consistency=default",
 		"source=${localEnv:HOME},target=/home/user,type=bind,consistency=default",
 		"source=/tmp,target=/tmp,type=bind,consistency=default",
-		"source="
 	],
 	"forwardPorts": [17010]
 }

@@ -46,8 +46,7 @@ kvmtool-cca/.git:
 linux-cca:
 	make -C linux-cca
 
-.PHONY: u-root-initramfs
-u-root-initramfs:
+u-root-initramfs/initramfs.cpio:
 	make -C u-root-initramfs
 
 clean:
