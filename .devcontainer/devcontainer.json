@@ -10,6 +10,7 @@
 		}
 	},
 	"mounts": [
+		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind,consistency=default",
 		"source=${localEnv:HOME},target=/home/user,type=bind,consistency=default",
 		"source=/tmp,target=/tmp,type=bind,consistency=default",
 	],
