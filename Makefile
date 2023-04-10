@@ -1,5 +1,5 @@
 .PHONY: default
-default: /usr/local/bin/qemu-system-aarch64 /usr/local/bin/lkvm linux-cca
+default: /usr/local/bin/qemu-system-aarch64 /usr/local/bin/lkvm linux-cca u-root-initramfs
 
 # Check if we are running inside a Docker container
 DOCKER_CONTAINER := $(shell if [ -f "/.dockerenv" ]; then echo "1"; fi)
@@ -34,14 +34,29 @@ qemu/.git:
 	cd qemu/build && ../configure --target-list=aarch64-softmmu
 
 /usr/local/bin/qemu-system-aarch64: qemu/.git
-	cd qemu/build && make -j`nproc` && make install
+	cd qemu/build && make -j`nproc` && sudo make install
 
 kvmtool-cca/.git:
 	git clone --depth 1 -b cca/rfc-v1 https://git.gitlab.arm.com/linux-arm/kvmtool-cca.git
 
 /usr/local/bin/lkvm: kvmtool-cca/.git
-	cd kvmtool-cca && make -j`nproc` && cp lkvm /usr/local/bin
+	cd kvmtool-cca && make -j`nproc` && sudo cp lkvm /usr/local/bin
 
 .PHONY: linux-cca
 linux-cca:
 	make -C linux-cca
+
+.PHONY: u-root-initramfs
+u-root-initramfs:
+	make -C u-root-initramfs
+
+clean:
+	make -C linux-cca clean
+	make -C u-root-initramfs clean
+	rm -rf qemu/.build
+
+nuke:
+	make -C linux-cca nuke
+	make -C u-root-initramfs nuke
+	rm -rf qemu
+	rm -rf kvmtool-cca

@@ -4,14 +4,15 @@ default: build
 guest/.git:
 	git clone --depth 1 --branch cca-guest/rfc-v1 https://git.gitlab.arm.com/linux-arm/linux-cca.git guest
 
-guest/arch/arm64/cca-attestion: guest/.git
-	cd guest && git checkout -b cca-guest/rfc-v1-patched
+guest/arch/arm64/cca-attestation/Kconfig: guest/.git
+ifneq (,$(wildcard guest/arch/arm64/cca-attestion/Kconfig))
 	@for patch in $(wildcard patches/*.patch); do \
 		echo "Applying patch: $$patch"; \
-		patch -d guest -p1 < $$patch; \
+		patch -N -d guest -p1 < $$patch; \
 	done
+endif
 
-guest/.build/.config: guest/arch/arm64/cca-attestation
+guest/.build/.config: guest/arch/arm64/cca-attestation/Kconfig
 	mkdir -p guest/.build
 	cp configs/guest-linux.config guest/.build/.config
 	make -C guest O=.build olddefconfig
