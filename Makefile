@@ -23,8 +23,8 @@ ifndef DOCKER_CONTAINER
 		docker volume create $(ARTIFACT_VOLUME_NAME); \
 	fi	
 	docker build -t $(CONTAINER_NAME) .devcontainer
-	docker run -v $(VOLUME_NAME):/workspaces -v $(shell pwd):/.work $(CONTAINER_NAME) sh -c "cp -r /.work/* /workspaces"
-	docker run -i -t --workdir /workspaces/cca-cpu --user vscode -v artifacts:/workspaces/artifacts -v $(shell pwd):/.work -v $(VOLUME_NAME):/workspaces/cca-cpu -v $(HOME):/home/user $(CONTAINER_NAME) /bin/bash
+	docker run -v $(WORK_VOLUME_NAME):/workspaces/cca-cpu -v $(shell pwd):/workspaces/.work -v $(ARTIFACT_VOLUME_NAME):/workspaces/artifacts $(CONTAINER_NAME) sh -c "cp -r /workspaces/.work/* /workspaces/cca-cpu && chown -Rf vscode.vscode /workspaces"
+	docker run -i -t --workdir /workspaces/cca-cpu --user vscode -v $(ARTIFACT_VOLUME_NAME):/workspaces/artifacts -v $(shell pwd):/workspaces/.work -v $(WORK_VOLUME_NAME):/workspaces/cca-cpu -v $(HOME):/home/user $(CONTAINER_NAME) /bin/bash
 else
 	@echo Already in docker container
 endif

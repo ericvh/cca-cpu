@@ -40,4 +40,7 @@ RUN if [ `uname -m` = "aarch64" ]; then \
 ENV GOROOT /usr/local/go
 ENV PATH /usr/local/go/bin:$PATH
 ENV GOPATH /home/vscode/go
+RUN mkdir -p /workspaces/cca-cpu
+RUN mkdir -p /workspaces/artifacts
+RUN mkdir -p /workspaces/.work
 WORKDIR /home/vscode

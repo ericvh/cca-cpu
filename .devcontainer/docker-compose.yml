@@ -10,7 +10,7 @@ services:
     image: cca-cpu/fvp
     build: ../fvp
     volumes:
-    - artifacts:/workspaces/artifacts
+      - artifacts:/workspaces/artifacts
     command: /bin/sh -c "while sleep 1000; do :; done"
 volumes:
   artifacts:
