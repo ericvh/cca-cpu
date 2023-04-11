@@ -3,21 +3,28 @@ default: /usr/local/bin/qemu-system-aarch64 /usr/local/bin/lkvm /workspaces/arti
 
 # Check if we are running inside a Docker container
 DOCKER_CONTAINER := $(shell if [ -f "/.dockerenv" ]; then echo "1"; fi)
-VOLUME_NAME := $(shell basename `pwd`)-workspaces
-CONTAINER_NAME := $(shell basename `pwd`)
+WORK_VOLUME_NAME ?= $(shell basename `pwd`)-workspaces
+ARTIFACT_VOLUME_NAME ?= $(shell basename `pwd`)-artifacts
+CONTAINER_NAME ?= $(shell basename `pwd`)
 
 workspaces:
 ifndef DOCKER_CONTAINER
-	@echo "Checking if volume $(VOLUME_NAME) exists..."
-	@if docker volume inspect $(VOLUME_NAME) >/dev/null 2>&1; then \
-		echo "Volume $(VOLUME_NAME) already exists."; \
+	@echo "Checking if volume $(WORK_VOLUME_NAME) exists..."
+	@if docker volume inspect $(WORK_VOLUME_NAME) >/dev/null 2>&1; then \
+		echo "Volume $(WORK_VOLUME_NAME) already exists."; \
 	else \
-		echo "Creating volume $(VOLUME_NAME)..."; \
-		docker volume create $(VOLUME_NAME); \
+		echo "Creating volume $(WORK_VOLUME_NAME)..."; \
+		docker volume create $(WORK_VOLUME_NAME); \
 	fi
-	docker build -t $(CONTAINER_NAME) .vscode
+	@if docker volume inspect $(ARTIFACT_VOLUME_NAME) >/dev/null 2>&1; then \
+		echo "Volume $(ARTIFACT_VOLUME_NAME) already exists."; \
+	else \
+		echo "Creating volume $(ARTIFACT_VOLUME_NAME)..."; \
+		docker volume create $(ARTIFACT_VOLUME_NAME); \
+	fi	
+	docker build -t $(CONTAINER_NAME) .devcontainer
 	docker run -v $(VOLUME_NAME):/workspaces -v $(shell pwd):/.work $(CONTAINER_NAME) sh -c "cp -r /.work/* /workspaces"
-	docker run -i -t --workdir /workspaces -v $(shell pwd):/.work -v $(VOLUME_NAME):/workspaces $(CONTAINER_NAME) /bin/bash
+	docker run -i -t --workdir /workspaces/cca-cpu --user vscode -v artifacts:/workspaces/artifacts -v $(shell pwd):/.work -v $(VOLUME_NAME):/workspaces/cca-cpu -v $(HOME):/home/user $(CONTAINER_NAME) /bin/bash
 else
 	@echo Already in docker container
 endif
@@ -64,3 +71,9 @@ nuke:
 	make -C u-root-initramfs nuke
 	rm -rf qemu
 	rm -rf kvmtool-cca
+
+nuke-artifacts:
+	rm -f /workspaces/artifacts/initramfs.cpio
+	rm -f /workspaces/artifacts/Image
+	rm -f /workspaces/artifacts/Image.guest
+
