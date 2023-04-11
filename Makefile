@@ -23,8 +23,11 @@ ifndef DOCKER_CONTAINER
 		docker volume create $(ARTIFACT_VOLUME_NAME); \
 	fi	
 	docker build -t $(CONTAINER_NAME) .devcontainer
-	docker run -v $(WORK_VOLUME_NAME):/workspaces/cca-cpu -v $(shell pwd):/workspaces/.work -v $(ARTIFACT_VOLUME_NAME):/workspaces/artifacts $(CONTAINER_NAME) sh -c "cp -r /workspaces/.work/* /workspaces/cca-cpu && chown -Rf vscode.vscode /workspaces"
-	docker run -i -t --workdir /workspaces/cca-cpu --user vscode -v $(ARTIFACT_VOLUME_NAME):/workspaces/artifacts -v $(shell pwd):/workspaces/.work -v $(WORK_VOLUME_NAME):/workspaces/cca-cpu -v $(HOME):/home/user $(CONTAINER_NAME) /bin/bash
+	docker build -t $(CONTAINER_NAME)-fvp fvp
+	docker run --rm -v $(WORK_VOLUME_NAME):/workspaces/cca-cpu -v $(shell pwd):/workspaces/.work -v $(ARTIFACT_VOLUME_NAME):/workspaces/artifacts $(CONTAINER_NAME) sh -c "cp -r /workspaces/.work/* /workspaces/cca-cpu && chown -Rf vscode.vscode /workspaces"
+#	docker run --rm -d --name cca-cpu-fvp -v $(ARTIFACT_VOLUME_NAME):/workspaces/artifacts -v $(shell pwd):/workspaces/.work -v $(WORK_VOLUME_NAME):/workspaces/cca-cpu -v $(HOME):/home/user $(CONTAINER_NAME)-fvp /bin/sh -c "while sleep 1000; do :; done"
+	docker run --rm --name cca-cpu-dev -i -t --workdir /workspaces/cca-cpu --user vscode \
+		-v /var/run/docker.sock:/var/run/docker.sock -v $(ARTIFACT_VOLUME_NAME):/workspaces/artifacts -v $(shell pwd):/workspaces/.work -v $(WORK_VOLUME_NAME):/workspaces/cca-cpu -v $(HOME):/home/user $(CONTAINER_NAME) /bin/bash
 else
 	@echo Already in docker container
 endif
