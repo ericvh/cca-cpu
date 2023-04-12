@@ -1,42 +1,10 @@
 .PHONY: default
-default: /usr/local/bin/qemu-system-aarch64 /usr/local/bin/lkvm /workspaces/artifacts/Image.guest /workspaces/artifacts/Image /workspaces/artifacts/initramfs.cpio
 
 # Check if we are running inside a Docker container
 DOCKER_CONTAINER := $(shell if [ -f "/.dockerenv" ]; then echo "1"; fi)
 WORK_VOLUME_NAME ?= $(shell basename `pwd`)-workspaces
 ARTIFACT_VOLUME_NAME ?= $(shell basename `pwd`)-artifacts
 CONTAINER_NAME ?= $(shell basename `pwd`)
-
-workspaces:
-ifndef DOCKER_CONTAINER
-	@echo "Checking if volume $(WORK_VOLUME_NAME) exists..."
-	@if docker volume inspect $(WORK_VOLUME_NAME) >/dev/null 2>&1; then \
-		echo "Volume $(WORK_VOLUME_NAME) already exists."; \
-	else \
-		echo "Creating volume $(WORK_VOLUME_NAME)..."; \
-		docker volume create $(WORK_VOLUME_NAME); \
-	fi
-	@if docker volume inspect $(ARTIFACT_VOLUME_NAME) >/dev/null 2>&1; then \
-		echo "Volume $(ARTIFACT_VOLUME_NAME) already exists."; \
-	else \
-		echo "Creating volume $(ARTIFACT_VOLUME_NAME)..."; \
-		docker volume create $(ARTIFACT_VOLUME_NAME); \
-	fi	
-	docker build -t $(CONTAINER_NAME) .devcontainer
-	docker build -t $(CONTAINER_NAME)-fvp fvp
-	docker run --rm -v $(WORK_VOLUME_NAME):/workspaces/cca-cpu -v $(shell pwd):/workspaces/.work -v $(ARTIFACT_VOLUME_NAME):/workspaces/artifacts $(CONTAINER_NAME) sh -c "cp -r /workspaces/.work/* /workspaces/cca-cpu && chown -Rf vscode.vscode /workspaces"
-#	docker run --rm -d --name cca-cpu-fvp -v $(ARTIFACT_VOLUME_NAME):/workspaces/artifacts -v $(shell pwd):/workspaces/.work -v $(WORK_VOLUME_NAME):/workspaces/cca-cpu -v $(HOME):/home/user $(CONTAINER_NAME)-fvp /bin/sh -c "while sleep 1000; do :; done"
-	docker run --rm --name cca-cpu-dev -i -t --workdir /workspaces/cca-cpu --user vscode \
-		-v /var/run/docker.sock:/var/run/docker.sock -v $(ARTIFACT_VOLUME_NAME):/workspaces/artifacts -v $(shell pwd):/workspaces/.work -v $(WORK_VOLUME_NAME):/workspaces/cca-cpu -v $(HOME):/home/user $(CONTAINER_NAME) /bin/bash
-else
-	@echo Already in docker container
-endif
-
-start-docker: create-volume
-	docker run -it --rm \
-		--name $(DOCKER_CONTAINER_NAME) \
-		-v $(VOLUME_NAME):/work \
-		$(DOCKER_IMAGE_NAME)
 
 qemu/.git:
 	git clone --depth 1 -b cca/rfc-v1 git://jpbrucker.net/jbru/qemu.git
@@ -63,6 +31,7 @@ kvmtool-cca/.git:
 /workspaces/artifacts/initramfs.cpio:
 	make -C u-root-initramfs
 	sudo cp u-root-initramfs/initramfs.cpio /workspaces/artifacts/initramfs.cpio
+	sudo cp u-root-initramfs/cpu/bin/* /usr/local/bin
 
 clean:
 	make -C linux-cca clean
