@@ -1,11 +1,10 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-	"dockerComposeFile": "docker-compose.yml",
+	"name": "cca-cpu",
+	"build": { "dockerfile" : "Dockerfile" },
 	"remoteUser": "vscode",
 	"containerUser": "vscode",
-	"service": "dev",
-	"shutdownAction": "stopCompose",
 	"customizations": {
 		"vscode": {
 				"extensions": ["jvalecillos.gpg","ms-vscode.cpptools","dendron.dendron","GitHub.vscode-pull-request-github","eamodio.gitlens"]
@@ -14,7 +13,6 @@
 	"mounts": [
 		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind,consistency=default",
 		"source=${localEnv:HOME},target=/home/user,type=bind,consistency=default",
-		"source=/tmp,target=/tmp,type=bind,consistency=default",
 	],
-	"forwardPorts": [17010]
+	"forwardPorts": [17010],
 }
