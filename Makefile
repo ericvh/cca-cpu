@@ -27,6 +27,18 @@ $(ARTIFACTS)/initramfs.cpio:
 $(ARTIFACTS)/cpu:
 	make -C u-root-initramfs cpu
 
+$(ARTIFACTS)/qemu-system-aarch64:
+	make -C qemu
+
+$(ARTIFACTS)/rmm.img:
+	make -C tf-rmm
+
+$(ARTIFACTS)/bl1-linux.bin: $(ARTIFACTS)/rmm.img
+	make -C tf-a $@
+
+$(ARTIFACTS)/fip-linux.bin: $(ARTIFACTS)/rmm.img
+	make -C tf-a $@
+
 clean:
 	make -C linux-cca -c clean
 	make -C u-root-initramfs clean

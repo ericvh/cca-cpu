@@ -1,0 +1,25 @@
+From 738eac13450a5434c44edec5eb2ad8316d50c732 Mon Sep 17 00:00:00 2001
+From: Yousuf A <yousuf.sait@arm.com>
+Date: Tue, 06 Dec 2022 11:26:00 +0000
+Subject: [PATCH] rme: Disable cpuidle in kernel command line
+
+The RME specific kernel command line is modified to disable
+cpuidle. Without this DS-5 debugging ceases to work. Also the
+performance improves a lot with cpuidle disabled.
+
+Change-Id: I9cc3e17ce5082597ca3d7f45f2e2b65bdac9fa82
+---
+
+diff --git a/fdts/fvp-base-psci-common.dtsi b/fdts/fvp-base-psci-common.dtsi
+index 6018f0c..5053251 100644
+--- a/fdts/fvp-base-psci-common.dtsi
++++ b/fdts/fvp-base-psci-common.dtsi
+@@ -28,7 +28,7 @@
+ 	#size-cells = <2>;
+ 
+ #if (ENABLE_RME == 1)
+-	chosen { bootargs = "mem=1G console=ttyAMA0 earlycon=pl011,0x1c090000 root=/dev/vda ip=on";};
++	chosen { bootargs = "mem=1G console=ttyAMA0 earlycon=pl011,0x1c090000 root=/dev/vda ip=on cpuidle.off=1";};
+ #else
+ 	chosen {};
+ #endif

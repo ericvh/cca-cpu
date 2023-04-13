@@ -11,7 +11,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     eatmydata apt-get dist-upgrade -y && \
     eatmydata apt-get install --no-install-recommends -y \
             ccache \
-		    gcc \
+            cmake \
+            device-tree-compiler \
+            file \
+	        gcc \
             gdb \
             libfdt-dev \
             libvirt-clients \

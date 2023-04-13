@@ -12,7 +12,7 @@ TFA_REVISION = v2.8-rc0
 # Check if we are running inside a Docker container
 DOCKER_CONTAINER := $(shell if [ -f "/.dockerenv" ]; then echo "1"; fi)
 ifdef DOCKER_CONTAINER
-CONTAINER_ID := $(shell hostname)
-CONTAINER_NAME := $(shell basename `docker inspect ${CONTAINER_ID} | jq -r '.[].Name'`)
-VOLUME_NAME := $(shell docker inspect ${CONTAINER_ID} | jq -r '.[].Mounts[] | select(.Destination | startswith("/workspaces")) | .Name')
+export CONTAINER_ID := $(shell hostname)
+export CONTAINER_NAME := $(shell basename `docker inspect ${CONTAINER_ID} | jq -r '.[].Name'`)
+export VOLUME_NAME := $(shell docker inspect ${CONTAINER_ID} | jq -r '.[].Mounts[] | select(.Destination | startswith("/workspaces")) | .Name')
 endif

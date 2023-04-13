@@ -1,0 +1,36 @@
+From 50ecd5d8f260dc7124368f98539a0d523eb6426c Mon Sep 17 00:00:00 2001
+From: Eric Van Hensbergen <eric.vanhensbergen@arm.com>
+Date: Thu, 21 Apr 2022 14:17:08 -0500
+Subject: [PATCH] Add 9p support to DTS file and bootargs
+
+Signed-off-by: Eric Van Hensbergen <eric.vanhensbergen@arm.com>
+---
+ fdts/fvp-base-psci-common.dtsi | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/fdts/fvp-base-psci-common.dtsi b/fdts/fvp-base-psci-common.dtsi
+index 6018f0cc2..a7d945788 100644
+--- a/fdts/fvp-base-psci-common.dtsi
++++ b/fdts/fvp-base-psci-common.dtsi
+@@ -28,11 +28,17 @@
+ 	#size-cells = <2>;
+ 
+ #if (ENABLE_RME == 1)
+-	chosen { bootargs = "mem=1G console=ttyAMA0 earlycon=pl011,0x1c090000 root=/dev/vda ip=on cpuidle.off=1";};
++	chosen { bootargs = "mem=1G console=ttyAMA0 earlycon=pl011,0x1c090000 virtio_mmio.device=0x10000@0x1c140000:75 root=/dev/vda ip=on cpuidle.off=1";};
+ #else
+ 	chosen {};
+ #endif
+ 
++    virtio_p9@140000 {
++        compatible = "virtio,mmio";
++        reg = <0x0 0x1c140000 0x0 0x1000>;
++        interrupts = <0x0 0x2b 0x4>;
++    };
++
+ 	aliases {
+ 		serial0 = &v2m_serial0;
+ 		serial1 = &v2m_serial1;
+-- 
+2.32.0
+
