@@ -4,8 +4,10 @@ export ARTIFACTS="/workspaces/artifacts"
 export LINUX_BASE_ADDR="0x84000000"
 export INITRD_BASE_ADDR="0x83000000"
 
+export HOSTNAME=`hostname`
+export VOLUME_NAME=`docker inspect $HOSTNAME | jq -r '.[].Mounts[] | select(.Destination | startswith("/workspaces")) | .Name'`
 docker run --rm --name fvp -i -t \
-		-v cca-cpu_devcontainer_artifacts:/workspaces/artifacts \
+		-v $VOLUME_NAME:/workspaces \
 		-p 17010:17010 \
 		cca-cpu/fvp ./fvp \
 		-C bp.refcounter.non_arch_start_at_default=1 \

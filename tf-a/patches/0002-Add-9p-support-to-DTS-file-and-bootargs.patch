@@ -17,7 +17,7 @@ index 6018f0cc2..a7d945788 100644
  
  #if (ENABLE_RME == 1)
 -	chosen { bootargs = "mem=1G console=ttyAMA0 earlycon=pl011,0x1c090000 root=/dev/vda ip=on cpuidle.off=1";};
-+	chosen { bootargs = "mem=1G console=ttyAMA0 earlycon=pl011,0x1c090000 virtio_mmio.device=0x10000@0x1c140000:75 root=/dev/vda ip=on cpuidle.off=1";};
++	chosen { bootargs = "mem=1G console=ttyAMA0 earlycon=pl011,0x1c090000 virtio_mmio.device=0x10000@0x1c140000:75 initrd=0x83000000,0x1000000 ip=on cpuidle.off=1";};
  #else
  	chosen {};
  #endif
