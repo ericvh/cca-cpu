@@ -2,8 +2,7 @@ export ROOTDIR ?= $(abspath ..)
 include common.mk
 
 .PHONY: default
-default: $(ARTIFACTS)/lkvm $(ARTIFACTS)/Image $(ARTIFACTS)/Image.guest $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu
-
+default: $(ARTIFACTS)/lkvm $(ARTIFACTS)/Image $(ARTIFACTS)/Image.guest $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu $(ARTIFACTS)/qemu-system-aarch64 $(ARTIFACTS)/lkvm $(ARTIFACTS)/rmm.img $(ARTIFACTS)/bl1-linux.bin $(ARTIFACTS)/fip-linux.bin
 $(ARTIFACTS):
 	mkdir -p .$@
 
