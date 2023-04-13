@@ -1,40 +1,48 @@
 .PHONY: default
 default: build
 
-guest/.git:
-	git clone --depth 1 --branch cca-guest/rfc-v1 https://git.gitlab.arm.com/linux-arm/linux-cca.git guest
+ROOTDIR ?= $(abspath .)
+include ../common.mk
+
+$(SRC_DIR)/linux/guest/.git:
+	git clone --depth 1 --branch cca-guest/rfc-v1 https://git.gitlab.arm.com/linux-arm/linux-cca.git $(SRC_DIR)/linux/guest
 ifneq (,$(wildcard guest/arch/arm64/cca-attestion/Kconfig))
 	@for patch in $(wildcard patches/*.patch); do \
 		echo "Applying patch: $$patch"; \
-		patch -N -d guest -p1 < $$patch; \
+		patch -N -d $(SRC_DIR)/linux/guest -p1 < $$patch; \
 	done
 endif
 
-guest/.build/.config: guest/.git
-	mkdir -p guest/.build
-	cp configs/guest-linux.config guest/.build/.config
-	make -C guest O=.build olddefconfig
+$(BUILDS_DIR)/linux/guest/.config: $(SRC_DIR)/linux/guest/.git
+	mkdir -p $(BUILDS_DIR)/linux/guest
+	cp configs/guest-linux.config $(BUILDS_DIR)/linux/guest/.config
+	make -C $(SRC_DIR)/linux/guest O=$(BUILDS_DIR)/linux/guest olddefconfig
 
-guest/.build/arch/arm64/boot/Image: guest/.build/.config
-	make -C guest -j`nproc` O=.build
+$(BUILDS_DIR)/linux/guest/arch/arm64/boot/Image: $(BUILDS_DIR)/linux/guest/.config
+	make -C $(SRC_DIR)/linux/guest -j`nproc` O=$(BUILDS_DIR)/linux/guest
 
-host/.git: guest/.git
-	cd guest && git remote set-branches origin '*' && git fetch -v --depth=1 && git worktree add ../host cca-host/rfc-v1
+$(SRC_DIR)/linux/host/.git: $(SRC_DIR)/linux/guest/.git
+	cd $(SRC_DIR)/linux/guest && git remote set-branches origin '*' && git fetch -v --depth=1 && git worktree add $(SRC_DIR)/linux/host cca-host/rfc-v1
 
-host/.build/.config: host/.git
-	mkdir host/.build
-	cp configs/host-linux.config host/.build/.config
-	make -C host O=.build olddefconfig
+$(BUILDS_DIR)/linux/host/.config: $(SRC_DIR)/linux/host/.git
+	mkdir -p $(BUILDS_DIR)/linux/host
+	cp configs/host-linux.config $(BUILDS_DIR)/linux/host/.config
+	make -C $(SRC_DIR)/linux/host O=$(BUILDS_DIR)/linux/host olddefconfig
 
-host/.build/arch/arm64/boot/Image: host/.build/.config
-	make -C host -j`nproc` O=.build
+$(BUILDS_DIR)/linux/host/arch/arm64/boot/Image: $(BUILDS_DIR)/linux/host/.config
+	make -C $(SRC_DIR)/linux/host -j`nproc` O=$(BUILDS_DIR)/linux/host
 
 .PHONY: build
-build: guest/.build/arch/arm64/boot/Image host/.build/arch/arm64/boot/Image
+build: $(BUILDS_DIR)/linux/guest/arch/arm64/boot/Image $(BUILDS_DIR)/linux/host/arch/arm64/boot/Image
+
+.PHONY: host
+host: $(BUILDS_DIR)/linux/host/arch/arm64/boot/Image
+
+.PHONY: guest
+guest: $(BUILDS_DIR)/linux/guest/arch/arm64/boot/Image
 
 clean:
-	rm -rf guest/.build
-	rm -rf host/.build
+	rm -rf $(BUILDS_DIR)/linux
 
-nuke:
-	rm -rf guest host
+nuke: clean
+	rm -rf $(SRC_DIR)/linux
