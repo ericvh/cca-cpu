@@ -56,7 +56,11 @@ clean:
 	rm -rf $(BUILDS_DIR)/*
 
 nuke:
-	rm -rf $(SRC_DIR)
+	rm -rf $(SRC_DIR)/cpu
+	rm -rf $(SRC_DIR)/kvmtool-cca
+	rm -rf $(SRC_DIR)/qemu
+	rm -rf $(SRC_DIR)/linux
+	rm -rf $(SRC_DIR)/u-root
 
 nuke-artifacts:
 	rm -rf $(ARTIFACTS)
