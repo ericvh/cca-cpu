@@ -1,8 +1,6 @@
 #!/bin/bash
-
-cpu -d gateway.docker.internal lkvm run --realm --irqchip=gicv3-its --console=virtio \
+FVP_IP=`docker inspect fvp | jq -r '.[].NetworkSettings.IPAddress'`
+ln -f -s /tmp/local/tmp $HOME/.lkvm
+PWD=/ /workspaces/artifacts/cpu -namespace "/workspaces:/lib:/lib64:/usr:/bin:/etc:/home" $FVP_IP /workspaces/artifacts/lkvm run --realm --irqchip=gicv3-its --console=virtio \
     -c 1 -m 64 \
-    -k /tmp/cpu/workspaces/artifacts/Image.guest -i /tmp/cpu/workspaces/artifacts/initramfs.cpio
-
-
-ccpu realm top
+    -k /workspaces/artifacts/Image.guest -i /workspaces/artifacts/initramfs.cpio
