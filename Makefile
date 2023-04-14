@@ -1,8 +1,11 @@
 export ROOTDIR ?= $(abspath ..)
 include common.mk
 
-.PHONY: default
+.PHONY: default ci
 default: $(ARTIFACTS)/lkvm $(ARTIFACTS)/Image $(ARTIFACTS)/Image.guest $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu $(ARTIFACTS)/qemu-system-aarch64 $(ARTIFACTS)/lkvm $(ARTIFACTS)/rmm.img $(ARTIFACTS)/bl1-linux.bin $(ARTIFACTS)/fip-linux.bin fvp-docker
+# ci builds neither qemu nor FVP docker images for now
+ci: $(ARTIFACTS)/lkvm $(ARTIFACTS)/Image $(ARTIFACTS)/Image.guest $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu $(ARTIFACTS)/lkvm $(ARTIFACTS)/rmm.img $(ARTIFACTS)/bl1-linux.bin $(ARTIFACTS)/fip-linux.bin
+
 $(ARTIFACTS):
 	mkdir -p $@
 	chown -Rf vscode.vscode $(ARTIFACTS)
