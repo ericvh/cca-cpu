@@ -15,6 +15,12 @@ on:
     tags: [ 'v*.*.*' ]
   pull_request:
     branches: [ "main" ]
+  workflow_call:
+    inputs:
+      platforms:
+        required: false
+        type: string
+        default: "linux/arm64"
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -49,6 +55,9 @@ jobs:
       # Workaround: https://github.com/docker/build-push-action/issues/461
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@79abd3f86f79a9d68a23c75a09a9a85889262adf
+        with:
+          platforms: ${{ inputs.platforms }}
+
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
@@ -74,6 +83,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
+          platforms: ${{ inputs.platforms }}
           context: ./.devcontainer
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
