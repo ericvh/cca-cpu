@@ -23,7 +23,7 @@ ${HOME}/.ssh/identity:
 	ssh-keygen -N "" -f ${HOME}/.ssh/identity
 
 $(ARTIFACTS)/initramfs.cpio: $(SRC_DIR)/cpu/.git $(BUILDS_DIR)/u-root/u-root ${HOME}/.ssh/identity
-	cd $(SRC_DIR)/cpu && $(BUILDS_DIR)/u-root/u-root -o $(ARTIFACTS)/initramfs.cpio -files ${HOME}/.ssh/identity.pub:key.pub -files /mnt -uroot-source $(SRC_DIR)/u-root -initcmd=/bbin/cpud $* core cmds/cpud
+	cd $(SRC_DIR)/cpu && $(BUILDS_DIR)/u-root/u-root -o $(ARTIFACTS)/initramfs.cpio -files ${HOME}/.ssh/identity.pub:key.pub -files /mnt -uroot-source $(SRC_DIR)/u-root -initcmd=/bbin/cpud $(SRC_DIR)/u-root/cmds/core/elvish cmds/cpud
 
 .PHONY: build
 build: $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu
