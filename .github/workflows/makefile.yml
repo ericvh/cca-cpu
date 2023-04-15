@@ -1,0 +1,19 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ghcr.io/ericvh/cca-cpu:main
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: ci
+      run: make ci
+
