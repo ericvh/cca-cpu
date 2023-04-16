@@ -1,4 +1,4 @@
-name: Docker
+name: build-on-docker
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -22,7 +22,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
+  build-docker:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -99,3 +99,28 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+
+  build-artifacts:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/ericvh/cca-cpu:main
+      options: --platform arm64
+
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v3
+  
+      - name: Build with make
+        run: make
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: binaries
+          path: ../artifacts/*
