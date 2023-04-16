@@ -1,10 +1,15 @@
 export ROOTDIR ?= $(abspath ..)
 include common.mk
 
-.PHONY: default ci
+.PHONY: default ci lkvm firmware initramfs linux-host linux-guest
 default: $(ARTIFACTS)/lkvm $(ARTIFACTS)/Image $(ARTIFACTS)/Image.guest $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu $(ARTIFACTS)/qemu-system-aarch64 $(ARTIFACTS)/lkvm $(ARTIFACTS)/rmm.img $(ARTIFACTS)/bl1-linux.bin $(ARTIFACTS)/fip-linux.bin fvp-docker
 # ci builds neither qemu nor FVP docker images for now
-ci: $(ARTIFACTS)/lkvm $(ARTIFACTS)/Image $(ARTIFACTS)/Image.guest $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu $(ARTIFACTS)/lkvm $(ARTIFACTS)/rmm.img $(ARTIFACTS)/bl1-linux.bin $(ARTIFACTS)/fip-linux.bin
+lkvm: $(ARTIFACTS)/lkvm
+firmware: $(ARTIFACTS)/rmm.img $(ARTIFACTS)/bl1-linux.bin $(ARTIFACTS)/fip-linux.bin
+initramfs: $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu
+linux-host: $(ARTIFACTS)/Image
+linux-guest: $(ARTIFACTS)/Image.guest
+ci: lkvm firmware initramfs cpu linux-host linux-guest
 
 $(ARTIFACTS):
 	mkdir -p $@
