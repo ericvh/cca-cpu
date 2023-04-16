@@ -101,9 +101,10 @@ jobs:
         run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
 
   build-artifacts:
+    needs: build-docker
     runs-on: ubuntu-latest
     container:
-      image: "--platform: arm64 ghcr.io/ericvh/cca-cpu:main"
+      image: "--platform arm64 ghcr.io/ericvh/cca-cpu:main"
 
     permissions:
       contents: read
