@@ -51,7 +51,7 @@ qemu-build:
 	make -C qemu
 
 
-$(ARTIFACTS)/rmm.img:
+$(ARTIFACTS)/rmm.img: $(ARTIFACTS)
 	make -C tf-rmm
 
 $(ARTIFACTS)/bl1-linux.bin: $(ARTIFACTS)/rmm.img
