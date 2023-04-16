@@ -103,8 +103,7 @@ jobs:
   build-artifacts:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/ericvh/cca-cpu:main
-      options: --platform arm64
+      image: "--platform: arm64 ghcr.io/ericvh/cca-cpu:main"
 
     permissions:
       contents: read
