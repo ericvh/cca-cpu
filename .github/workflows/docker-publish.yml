@@ -118,6 +118,11 @@ jobs:
       - name: create artifacts directory
         run: mkdir -p ${{ github.workspace }}/artifacts
 
+      - # Add support for more platforms with QEMU (optional)
+        # https://github.com/docker/setup-qemu-action
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 #v2
+
       - name: Build make inside docker
         uses: addnab/docker-run-action@v3
         with:
