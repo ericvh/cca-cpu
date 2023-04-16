@@ -103,8 +103,6 @@ jobs:
   build-artifacts:
     needs: build-docker
     runs-on: ubuntu-latest
-    container:
-      image: "--platform arm64 ghcr.io/ericvh/cca-cpu:main"
 
     permissions:
       contents: read
@@ -114,13 +112,22 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v3
-  
-      - name: Build with make
-        run: make
+      - name: checkout repo
+        uses: actions/checkout@v3
+
+      - name: create artifacts directory
+        run: mkdir -p ${{ github.workspace }}/artifacts
+
+      - name: Build make inside docker
+        uses: addnab/docker-run-action@v3
+        with:
+          registry: ghcr.io
+          image: ericvh/cca-cpu:main
+          options: --platform arm64 -w /workspaces/cca-cpu -v ${{ github.workspace }}:/workspaces/cca-cpu -v /var/run/docker.sock:/var/run/docker.sock -v ${{ github.workspapce }}/artifacts:/workspaces/artifacts 
+          run: make ci
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: binaries
-          path: ../artifacts/*
+          path: ${{ github.workspace }}/artifacts/*
