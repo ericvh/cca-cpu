@@ -121,8 +121,7 @@ jobs:
       - name: Build make inside docker
         uses: addnab/docker-run-action@v3
         with:
-          registry: ghcr.io
-          image: ericvh/cca-cpu:main
+          image: ghcr.io/ericvh/cca-cpu:main
           options: --platform arm64 -w /workspaces/cca-cpu -v ${{ github.workspace }}:/workspaces/cca-cpu -v /var/run/docker.sock:/var/run/docker.sock -v ${{ github.workspapce }}/artifacts:/workspaces/artifacts 
           run: make ci
 
