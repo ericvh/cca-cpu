@@ -180,7 +180,7 @@ jobs:
   build-artifacts:
     strategy:
       matrix:
-        target: [ lkvm, firmware, linux-host, linux-guest, initramfs ]
+        target: [ lkvm, firmware, linuxhost, linuxguest, initramfs ]
     needs: build-docker
     runs-on: ubuntu-latest
 
