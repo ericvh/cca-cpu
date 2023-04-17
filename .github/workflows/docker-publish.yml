@@ -180,7 +180,7 @@ jobs:
       matrix:
         target: [ lkvm, firmware, initramfs ]
     needs: build-docker
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, ARM64]
 
     permissions:
       contents: read
