@@ -45,5 +45,16 @@ ENV PATH /usr/local/go/bin:$PATH
 ENV GOPATH /home/vscode/go
 RUN mkdir -p /workspaces/cca-cpu
 RUN mkdir -p /workspaces/artifacts
-RUN mkdir -p /workspaces/.work
+RUN mkdir -p /workspaces/ccache
+RUN mkdir -p /usr/libexec/ccache-wrappers && \
+    ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/c++ && \
+    ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
+    ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/clang && \
+    ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/g++ && \
+    ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/gcc
+ENV CCACHE_DIR=/ccache
+ENV CCACHE_WRAPPERSDIR "/usr/libexec/ccache-wrappers"
+ENV LANG "en_US.UTF-8"
+ENV MAKE "/usr/bin/make"
+
 WORKDIR /home/vscode
