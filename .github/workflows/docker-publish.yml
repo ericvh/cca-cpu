@@ -178,7 +178,7 @@ jobs:
   build-artifacts:
     strategy:
       matrix:
-        target: [ lkvm, firmware, initramfs ]
+        target: [ lkvm, firmware, initramfs, linux ]
     needs: build-docker
     runs-on: [self-hosted, linux, ARM64]
 
