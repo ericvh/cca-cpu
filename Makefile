@@ -2,14 +2,17 @@ export ROOTDIR ?= $(abspath ..)
 include common.mk
 
 .PHONY: default ci lkvm firmware initramfs linux
-default: lkvm firmware initramfs cpu linux fvp-docker qemu-build
+default: lkvm firmware initramfs linux fvp-docker qemu
 # ci builds neither qemu nor FVP docker images for now
-ci: lkvm firmware initramfs cpu linux
+ci: lkvm firmware initramfs linux
+# standalone pulls artifacts from server and just builds qemu and fvp
+standalone: fvp-docker qemu
 
 lkvm: $(ARTIFACTS)/lkvm
 firmware: $(ARTIFACTS)/rmm.img $(ARTIFACTS)/bl1-linux.bin $(ARTIFACTS)/fip-linux.bin
 initramfs: $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu
 linux: $(ARTIFACTS)/Image $(ARTIFACTS)/Image.guest
+qemu: $(ARTIFACTS)/qemu-system-aarch64
 
 $(ARTIFACTS):
 	mkdir -p $@
@@ -41,7 +44,7 @@ $(ARTIFACTS)/cpu:
 
 $(ARTIFACTS)/qemu-system-aarch64:
 	docker build --platform arm64 -t $(CONTAINER_NAME)-qemu-builder qemu
-	docker run --platform arm64 --rm -i -t -v /var/run/docker.sock:/var/run/docker.sock -v cca-cpu-main-4766e1af21fa2d95bcb992f1e2e9bce792788547ec68e1636128b2786d141bb7:/workspaces --workdir=/workspaces/cca-cpu $(CONTAINER_NAME)-qemu-builder:latest make qemu-build
+	docker run --platform arm64 --rm -i -t -v /var/run/docker.sock:/var/run/docker.sock -v $(VOLUME_NAME):/workspaces --workdir=/workspaces/cca-cpu $(CONTAINER_NAME)-qemu-builder:latest make qemu-build
 	sudo chown -Rf vscode.vscode $(ARTIFACTS)/qemu-system-aarch64
 	sudo chown -Rf vscode.vscode $(ARTIFACTS)/efi-virtio.rom
 	sudo chown -Rf vscode.vscode $(BUILDS_DIR)/qemu

@@ -23,6 +23,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
         jq \
         less \
         libc6-dev \
+        libmount-dev \
 		lsb-release \
         openssl \
         ninja-build \
