@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: write
       packages: write
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
@@ -183,7 +183,7 @@ jobs:
     runs-on: [self-hosted, linux, ARM64]
 
     permissions:
-      contents: read
+      contents: write
       packages: write
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
@@ -208,8 +208,8 @@ jobs:
           options: --platform arm64 -w /workspaces/cca-cpu -v ${{ github.workspace }}:/workspaces/cca-cpu -v /var/run/docker.sock:/var/run/docker.sock -v ${{ github.workspace }}/artifacts:/workspaces/artifacts 
           run: make ${{ matrix.target }}
 
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.1.2
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: binaries
-          path: ${{ github.workspace }}/artifacts/*
+          files: ${{ github.workspace }}/artifacts/*
