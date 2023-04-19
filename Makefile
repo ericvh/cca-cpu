@@ -1,12 +1,14 @@
 export ROOTDIR ?= $(abspath ..)
+
 include common.mk
 
-.PHONY: default ci lkvm firmware initramfs linux
+
+.PHONY: default ci lkvm firmware initramfs linux downloadlatest
 default: lkvm firmware initramfs linux fvp-docker qemu
 # ci builds neither qemu nor FVP docker images for now
 ci: lkvm firmware initramfs linux
 # standalone pulls artifacts from server and just builds qemu and fvp
-standalone: fvp-docker qemu
+standalone: fvp-docker qemu downloadlatest
 
 lkvm: $(ARTIFACTS)/lkvm
 firmware: $(ARTIFACTS)/rmm.img $(ARTIFACTS)/bl1-linux.bin $(ARTIFACTS)/fip-linux.bin
@@ -16,7 +18,17 @@ qemu: $(ARTIFACTS)/qemu-system-aarch64
 
 $(ARTIFACTS):
 	mkdir -p $@
-	chown -Rf vscode.vscode $(ARTIFACTS)
+	chown -Rf $(USER).$(USER) $(ARTIFACTS)
+
+downloadlatest: $(ARTIFACTS)
+	wget -O $(ARTIFACTS)/Image https://github.com/ericvh/cca-cpu/releases/latest/download/Image > /dev/null 2>&1
+	wget -O $(ARTIFACTS)/Image.guest https://github.com/ericvh/cca-cpu/releases/latest/download/Image.guest > /dev/null 2>&1
+	wget -O $(ARTIFACTS)/initramfs.cpio https://github.com/ericvh/cca-cpu/releases/latest/download/initramfs.cpio > /dev/null 2>&1
+	wget -O $(ARTIFACTS)/rmm.img https://github.com/ericvh/cca-cpu/releases/latest/download/rmm.img > /dev/null 2>&1
+	wget -O $(ARTIFACTS)/bl1-linux.bin https://github.com/ericvh/cca-cpu/releases/latest/download/bl1-linux.bin > /dev/null 2>&1
+	wget -O $(ARTIFACTS)/fip-linux.bin https://github.com/ericvh/cca-cpu/releases/latest/download/fip-linux.bin > /dev/null 2>&1
+	wget -O $(ARTIFACTS)/cpu https://github.com/ericvh/cca-cpu/releases/latest/download/cpu > /dev/null 2>&1
+	wget -O $(ARTIFACTS)/lkvm https://github.com/ericvh/cca-cpu/releases/latest/download/lkvm > /dev/null 2>&1
 
 .PHONY: fvp-docker
 fvp-docker:
