@@ -56,6 +56,6 @@ screen -dmS FVP -t 'FVP' /opt/fvp/Base_RevC_AEMvA_pkg/models/Linux64*/FVP_Base_R
 		-C bp.flashloader0.fname=$ARTIFACTS/fip-linux.bin \
 		--data cluster0.cpu0=$ARTIFACTS/Image@$LINUX_BASE_ADDR \
         --data cluster0.cpu0=$ARTIFACTS/initramfs.cpio@$INITRD_BASE_ADDR \
-		-C bp.virtiop9device.root_path=/work
-
-sleep 5
+		-C bp.virtiop9device.root_path=/
+sleep 2
+screen -r Linux
