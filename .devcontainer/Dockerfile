@@ -38,7 +38,7 @@ RUN if [ `uname -m` = "aarch64" ]; then \
     else \
         export TARGETGOARCH="amd64"; \
     fi; \
-    wget https://go.dev/dl/go1.19.linux-$TARGETGOARCH.tar.gz; \
+    wget https://go.dev/dl/go1.20.3.linux-$TARGETGOARCH.tar.gz; \
     tar xf go*.tar.gz;rm go*.tar.gz;mv go /usr/local
 ENV GOROOT /usr/local/go
 ENV PATH /usr/local/go/bin:$PATH
