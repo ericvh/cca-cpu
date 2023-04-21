@@ -12,7 +12,7 @@ standalone: fvp-docker qemu downloadlatest
 
 lkvm: $(ARTIFACTS)/lkvm
 firmware: $(ARTIFACTS)/rmm.img $(ARTIFACTS)/bl1-linux.bin $(ARTIFACTS)/fip-linux.bin
-initramfs: $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu
+initramfs: $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu $(ARTIFACTS)/cpud
 linux: $(ARTIFACTS)/Image $(ARTIFACTS)/Image.guest
 qemu: $(ARTIFACTS)/qemu-system-aarch64
 
@@ -31,8 +31,12 @@ downloadlatest: $(ARTIFACTS)
 	wget -O $(ARTIFACTS)/lkvm https://github.com/ericvh/cca-cpu/releases/latest/download/lkvm > /dev/null 2>&1
 
 .PHONY: fvp-docker
-fvp-docker:
+fvp-docker: $(ARTIFACTS)/cpud
+	cp $(ARTIFACTS)/cpud fvp
+	cp $(ARTIFACTS)/identity.pub fvp
 	docker build -t cca-cpu/fvp fvp
+	rm -f fvp/cpud
+	rm -f fvp/identity.pub
 
 $(SRC_DIR)/kvmtool-cca/.git:
 	git clone --depth 1 -b cca/rfc-v1 https://git.gitlab.arm.com/linux-arm/kvmtool-cca.git $(SRC_DIR)/kvmtool-cca
@@ -53,6 +57,9 @@ $(ARTIFACTS)/initramfs.cpio:
 
 $(ARTIFACTS)/cpu:
 	make -C u-root-initramfs cpu
+
+$(ARTIFACTS)/cpud:
+	make -C u-root-initramfs cpud
 
 $(ARTIFACTS)/qemu-system-aarch64:
 	docker build --platform arm64 -t $(CONTAINER_NAME)-qemu-builder qemu
