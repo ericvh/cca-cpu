@@ -31,8 +31,12 @@ $(ARTIFACTS)/identity.pub: ${HOME}/.ssh/identity
 $(ARTIFACTS)/initramfs.cpio-cpud: $(SRC_DIR)/cpu/.git $(BUILDS_DIR)/u-root/u-root ${HOME}/.ssh/identity
 	cd $(SRC_DIR)/cpu && $(BUILDS_DIR)/u-root/u-root -o $(ARTIFACTS)/initramfs.cpio -files ${HOME}/.ssh/identity.pub:key.pub -files /mnt -uroot-source $(SRC_DIR)/u-root -uinitcmd=/bbin/cpud core cmds/cpud
 
+$(ARTIFACTS)/initramfs.cpio-debug: $(SRC_DIR)/cpu/.git $(BUILDS_DIR)/u-root/u-root ${HOME}/.ssh/identity
+	cd $(SRC_DIR)/u-root && $(BUILDS_DIR)/u-root/u-root -o $(ARTIFACTS)/initramfs.cpio -files ${HOME}/.ssh/identity.pub:key.pub -files /mnt -uroot-source $(SRC_DIR)/u-root -uinitcmd "" core
+
 $(ARTIFACTS)/initramfs.cpio: $(SRC_DIR)/cpu/.git $(BUILDS_DIR)/u-root/u-root ${HOME}/.ssh/identity
-	cd $(SRC_DIR)/u-root && $(BUILDS_DIR)/u-root/u-root -o $(ARTIFACTS)/initramfs.cpio -files ${HOME}/.ssh/identity.pub:key.pub -files /mnt -uroot-source $(SRC_DIR)/u-root -uinitcmd "mount -t 9p -o trans=virtio,protocol=9p2000.L FM /mnt" core
+	cd $(SRC_DIR)/u-root && $(BUILDS_DIR)/u-root/u-root -o $(ARTIFACTS)/initramfs.cpio -files ${HOME}/.ssh/identity.pub:key.pub -files /mnt -files /workspaces/cca-cpu/bin/namespace.elv:/bbin/namespace.elv -uroot-source $(SRC_DIR)/u-root -uinitcmd "/bbin/namespace.elv" ./cmds/core/elvish ./cmds/core/mount ./cmds/core/init ./cmds/core/mkdir
+
 
 .PHONY: build
 build: $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu
