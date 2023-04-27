@@ -9,8 +9,10 @@ RUN --mount=type=cache,target=/var/cache/apt \
 	apt-get install -yqq --no-install-recommends \
     ca-certificates \
     libatomic1 \
+    iptables \
     screen \
     telnet \
+    kmod \
     wget
 RUN if [ `uname -m` = "aarch64" ] ; then wget https://developer.arm.com/-/media/Files/downloads/ecosystem-models/FVP_Base_RevC-2xAEMvA_11.21_15_Linux64_armv8l.tgz ; \
                                     else wget https://developer.arm.com/-/media/Files/downloads/ecosystem-models/FVP_Base_RevC-2xAEMvA_11.21_15_Linux64.tgz ; fi \
