@@ -63,7 +63,7 @@ make
 Once everything is built, you should be able to run the demo:
 
 ```
-vscode ➜ /workspaces/cca-cpu (fvp-cpu) $ bin/start-fvp.bash 
+vscode ➜ /workspaces/cca-cpu (fvp-cpu) $ bin/launch.bash 
 Starting FVP...hit ^a-d to exit
 ...
 [    3.723671] Freeing unused kernel memory: 7936K
@@ -76,34 +76,25 @@ Starting FVP...hit ^a-d to exit
    \__,_|    |_|  \___/ \___/ \__|
 
 [    3.837078] cgroup: Unknown subsys name 'net_cls'
-root@172:/# /workspaces/cca-cpu/bin/test-lkvm.bash
-  # lkvm run -k /mnt/workspaces/artifacts/Image.guest -m 256 -c 1 --name guest-150
-[    1.345860] cacheinfo: Unable to detect cache hierarchy for CPU 0
-[    1.453459] loop: module loaded
-[    1.457073] tun: Universal TUN/TAP device driver, 1.6
-[    1.497107] net eth0: Fail to set guest offload.
-[    1.498512] virtio_net virtio2 eth0: set_features() failed (-22); wanted 0x0000000000134829, left 0x0080000000134829
-[    1.523209] VFIO - User Level meta-driver version: 0.3
-[    1.531093] SMCCC: SOC_ID: ARCH_SOC_ID not implemented, skipping ....
-[    1.537293] NET: Registered PF_PACKET protocol family
-[    1.538770] 9pnet: Installing 9P2000 support
-[    1.558259] NET: Registered PF_VSOCK protocol family
-[    1.616972] registered taskstats version 1
-[    1.730594] Freeing unused kernel memory: 1088K
-[    1.733815] Run /init as init process
-1970/01/01 00:00:01 Welcome to u-root!
+Mounting namespace from host....
+starting Realm....be patient
+  # lkvm run -k /mnt/workspaces/artifacts/Image.guest -m 256 -c 1 --name guest-154
+... (about 30 seconds on an M1)
+[    2.400690] Freeing unused kernel memory: 1088K
+[    2.407718] Run /init as init process
+1970/01/01 00:00:02 Welcome to u-root!
                               _
    _   _      _ __ ___   ___ | |_
   | | | |____| '__/ _ \ / _ \| __|
   | |_| |____| | | (_) | (_) | |_
    \__,_|    |_|  \___/ \___/ \__|
 
-[    2.612950] cgroup: Unknown subsys name 'net_cls'
-root@(none):/# 
+[    2.723597] cgroup: Unknown subsys name 'net_cls'
+Mounting namespace from host....
+root@192:/# 
 ```
 
-The second invocation (test-lkvm) takes a couple minutes due to dialated simulation time.
-Both the FVP linux host (root@172 prompt) and the CCA realm (root@unknown) have the namespace
+The CCA realm (root@192) has the namespace of the originating dev container (or launch environment)
 from the originating vscode dev container mounted (this includes /workspaces, /home, as well
 as /usr, /bin, and /lib) -- so you can run all executables just like you would in your
 devcontainer.
