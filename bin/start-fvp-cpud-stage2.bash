@@ -43,7 +43,7 @@ screen -dmS FVP -t 'FVP' /tmp/local/opt/fvp/Base_RevC_AEMvA_pkg/models/Linux64*/
 		-C pctl.startup=0.0.0.0 \
 		-C bp.smsc_91c111.enabled=1 \
 		-C bp.hostbridge.userNetworking=1 \
-		-C bp.hostbridge.userNetPorts=17010=17010 \
+		-C bp.hostbridge.userNetPorts=17011=17011 \
 		-C bp.pl011_uart0.uart_enable=1 \
 		-C bp.pl011_uart1.uart_enable=1 \
 		-C bp.pl011_uart2.uart_enable=1 \
