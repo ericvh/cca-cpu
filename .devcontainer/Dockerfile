@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 		    libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf llvm \
         	      ca-certificates git-core openssh-client \
         	      libpopt-dev ncurses-dev automake autoconf git pkgconf \
-        	      lua5.1 liblua5.1-dev libmunge-dev libwrap0-dev libcap-dev libattr1-dev \
+        	      lua5.1 liblua5.1-dev libmunge-dev libwrap0-dev libcap-dev libattr1-dev libcap-ng-dev \
 		    mutt \
 		    pip \
             vim pinentry-tty libsasl2-modules \

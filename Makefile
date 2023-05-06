@@ -63,14 +63,6 @@ $(ARTIFACTS)/cpud:
 	make -C u-root-initramfs cpud
 
 $(ARTIFACTS)/qemu-system-aarch64:
-	docker build --platform arm64 -t $(CONTAINER_NAME)-qemu-builder qemu
-	docker run --platform arm64 --rm -i -t -v /var/run/docker.sock:/var/run/docker.sock -v $(VOLUME_NAME):/workspaces --workdir=/workspaces/cca-cpu $(CONTAINER_NAME)-qemu-builder:latest make qemu-build
-	sudo chown -Rf vscode.vscode $(ARTIFACTS)/qemu-system-aarch64
-	sudo chown -Rf vscode.vscode $(ARTIFACTS)/efi-virtio.rom
-	sudo chown -Rf vscode.vscode $(BUILDS_DIR)/qemu
-	sudo chown -Rf vscode.vscode $(SRC_DIR)/qemu
-
-qemu-build:
 	make -C qemu
 
 $(ARTIFACTS)/rmm.img: $(ARTIFACTS)
