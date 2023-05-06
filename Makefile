@@ -43,36 +43,46 @@ $(SRC_DIR)/kvmtool-cca/.git:
 
 $(ARTIFACTS)/lkvm: $(SRC_DIR)/kvmtool-cca/.git $(ARTIFACTS)
 	cd $(SRC_DIR)/kvmtool-cca && make LDFLAGS="-static" -j`nproc` && cp lkvm $(ARTIFACTS)
+	chmod -Rf ugo+rw $(ARTIFACTS)
 
 $(ARTIFACTS)/Image.guest: $(ARTIFACTS)
 	make -C linux-cca guest
 	cp $(BUILDS_DIR)/linux/guest/arch/arm64/boot/Image $(ARTIFACTS)/Image.guest
+	chmod -Rf ugo+rw $(ARTIFACTS)
 
 $(ARTIFACTS)/Image: $(ARTIFACTS)
 	make -C linux-cca host
 	cp -rf $(BUILDS_DIR)/linux/lib $(ARTIFACTS)
 	cp $(BUILDS_DIR)/linux/host/arch/arm64/boot/Image $(ARTIFACTS)
+	chmod -Rf ugo+rw $(ARTIFACTS)
 
 $(ARTIFACTS)/initramfs.cpio:
 	make -C u-root-initramfs initramfs.cpio
+	chmod -Rf ugo+rw $(ARTIFACTS)
 
 $(ARTIFACTS)/cpu:
 	make -C u-root-initramfs cpu
+	chmod -Rf ugo+rw $(ARTIFACTS)
 
 $(ARTIFACTS)/cpud:
 	make -C u-root-initramfs cpud
+	chmod -Rf ugo+rw $(ARTIFACTS)
 
 $(ARTIFACTS)/qemu-system-aarch64:
 	make -C qemu
+	chmod -Rf ugo+rw $(ARTIFACTS)
 
 $(ARTIFACTS)/rmm.img: $(ARTIFACTS)
 	make -C tf-rmm
+	chmod -Rf ugo+rw $(ARTIFACTS)
 
 $(ARTIFACTS)/bl1-linux.bin: $(ARTIFACTS)/rmm.img
 	make -C tf-a $@
+	chmod -Rf ugo+rw $(ARTIFACTS)
 
 $(ARTIFACTS)/fip-linux.bin: $(ARTIFACTS)/rmm.img
 	make -C tf-a $@
+	chmod -Rf ugo+rw $(ARTIFACTS)
 
 clean:
 	make -C linux-cca -c clean
