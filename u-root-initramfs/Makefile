@@ -6,6 +6,7 @@ include ../common.mk
 
 $(SRC_DIR)/cpu/.git:
 	git clone --depth 1 https://github.com/u-root/cpu.git $(SRC_DIR)/cpu
+	patch -N -p 1 -d $(SRC_DIR)/cpu -i $(ROOTDIR)/cca-cpu/u-root-initramfs/0001-Weird-cast-error-seems-to-cause-trouble.patch
 
 $(ARTIFACTS)/cpu: $(SRC_DIR)/cpu/.git
 	cd $(SRC_DIR)/cpu && go build -o $(ARTIFACTS)/cpu $(SRC_DIR)/cpu/cmds/cpu/.
