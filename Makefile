@@ -48,7 +48,7 @@ $(ARTIFACTS)/Image.guest: $(ARTIFACTS)
 	make -C linux-cca guest
 	cp $(BUILDS_DIR)/linux/guest/arch/arm64/boot/Image $(ARTIFACTS)/Image.guest
 
-$(ARTIFACTS)/Image: $(BUILDS_DIR)/linux/host/arch/arm64/boot/Image
+$(ARTIFACTS)/Image: $(ARTIFACTS)
 	make -C linux-cca host
 	cp -rf $(BUILDS_DIR)/linux/lib $(ARTIFACTS)
 	cp $(BUILDS_DIR)/linux/host/arch/arm64/boot/Image $(ARTIFACTS)
