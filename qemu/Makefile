@@ -8,7 +8,7 @@ QEMU_SRC = $(SRC_DIR)/qemu
 QEMU_BUILD = $(BUILDS_DIR)/qemu
 QEMU_URL = git://jpbrucker.net/jbru/qemu.git
 QEMU_BRANCH = cca/rfc-v1
-QEMU_CONFIGURE_FLAGS = --target-list=aarch64-softmmu --static --disable-docs
+QEMU_CONFIGURE_FLAGS = --target-list=aarch64-softmmu --disable-docs --enable-slirp --enable-virtfs
 
 default: build
 
