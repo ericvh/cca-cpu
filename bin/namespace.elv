@@ -14,5 +14,5 @@ if ( > (count $args) 0 ) {
     elvish -c $@args
 } else {
     echo starting Realm....be patient
-    /workspaces/cca-cpu/bin/start-lkvm.bash
+    /usr/local/share/cca/lkvm-cca
 }

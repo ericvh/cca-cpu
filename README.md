@@ -5,6 +5,12 @@
 Build an environment which runs without buildroots to allow for easy development and test of CCA environments by leveraging u-root,
 cpu, and virtio 9p backmounts.  For more information on any of these environments see the links session at the end of this document.
 
+## Approach
+
+While it is possible to use aspects of this repository in a different manner - several of the scripts have now been tuned for using as a _feature_ in vscode.
+The feature repository which uses the products of this repository is currently located in https://github.com/ericvh/cca-cpu-feature and you can find instructions there
+for how to use.
+
 ## Components
 
 - _.devcontainer_ : devcontainer setup including primary Dockerfile 
